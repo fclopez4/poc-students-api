@@ -14,5 +14,5 @@ public class StudentResponse {
     private String name;
     private String surname;
     private String status;
-    private Integer age;
+    private Short age;
 }

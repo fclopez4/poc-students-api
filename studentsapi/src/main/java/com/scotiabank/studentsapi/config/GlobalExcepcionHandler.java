@@ -1,0 +1,76 @@
+package com.scotiabank.studentsapi.config;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.springframework.dao.DuplicateKeyException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.FieldError;
+import org.springframework.web.accept.MissingApiVersionException;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.bind.support.WebExchangeBindException;
+
+import lombok.extern.slf4j.Slf4j;
+import reactor.core.publisher.Mono;
+
+@Slf4j
+@RestControllerAdvice
+public class GlobalExcepcionHandler {
+
+    @ExceptionHandler(WebExchangeBindException.class)
+    @ResponseStatus(HttpStatus.PRECONDITION_FAILED)
+    public Mono<ResponseEntity<Map<String, Object>>> handleWebExchangeBindException(WebExchangeBindException ex) {
+        log.error("Ocurrió una excepción en la validación de los argumentos:", ex);
+
+        List<String> errors = ex.getBindingResult()
+                .getFieldErrors()
+                .stream()
+                .map(FieldError::getDefaultMessage)
+                .collect(Collectors.toList());
+
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put("status", HttpStatus.PRECONDITION_FAILED.value());
+        errorResponse.put("message", "Validation failed");
+        errorResponse.put("errors", errors);
+
+        return Mono.just(new ResponseEntity<>(errorResponse, HttpStatus.PRECONDITION_FAILED));
+    }
+
+    @ExceptionHandler(DuplicateKeyException.class)
+    public Mono<ResponseEntity<Map<String, Object>>> handleDuplicateKeyException(DuplicateKeyException ex) {
+        log.error("Ocurrió una excepción de clave duplicada:", ex);
+
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put("status", HttpStatus.PRECONDITION_FAILED.value());
+        errorResponse.put("message", ex.getMessage());
+
+        return Mono.just(new ResponseEntity<>(errorResponse, HttpStatus.PRECONDITION_FAILED));
+    }
+
+    @ExceptionHandler(MissingApiVersionException.class)
+    public Mono<ResponseEntity<Map<String, Object>>> handleMissingApiVersionException(MissingApiVersionException ex) {
+        log.error("Ocurrió una excepción de versión API faltante:", ex);
+
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put("status", HttpStatus.BAD_REQUEST.value());
+        errorResponse.put("message", ex.getMessage());
+
+        return Mono.just(new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST));
+    }
+
+    @ExceptionHandler(Exception.class)
+    public Mono<ResponseEntity<Map<String, Object>>> handleGeneralException(Exception ex) {
+        log.error("Ocurrió una excepción no controlada:", ex);
+        
+        Map<String, Object> errorResponse = new HashMap<>();
+        errorResponse.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        errorResponse.put("message", ex.getMessage());
+
+        return Mono.just(new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR));
+    }
+}

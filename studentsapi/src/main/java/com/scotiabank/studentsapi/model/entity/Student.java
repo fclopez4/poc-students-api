@@ -24,7 +24,7 @@ public class Student implements Persistable<Long> {
     private String name;
     private String surname;
     private StatusStudent status;
-    private int age;
+    private Short age;
 
     @Transient
     @Builder.Default

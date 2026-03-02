@@ -6,15 +6,27 @@ spring:
     url: r2dbc:h2:mem:///studentsdb?options=DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
     username: sa
     password:
-
-  sql:
-    init:
-      mode: always 
     
-server:
-  port: 8080
-
 logging:
   level:
-    '[com.scotiabank.studentsapi]': DEBUG
-    '[org.springframework.r2dbc: DEBUG]': DEBUG
+    org:
+      springframework:
+        web:
+          reactive:
+            function: DEBUG
+        r2dbc: DEBUG
+    reactor:
+      netty:
+        http:
+          client: DEBUG
+          server: DEBUG
+
+# Server configuration
+server:
+  port: 8080
+  netty:
+    connection-timeout: 20s
+    idle-timeout: 60s
+  compression:
+    enabled: true
+    mime-types: application/json,application/xml,text/html,text/xml,text/plain

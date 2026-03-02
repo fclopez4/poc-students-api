@@ -1,25 +1,32 @@
 package com.scotiabank.studentsapi.controller;
 
+import java.time.LocalDateTime;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.scotiabank.studentsapi.model.dto.StudentRequest;
 import com.scotiabank.studentsapi.model.dto.StudentResponse;
 import com.scotiabank.studentsapi.model.enums.StatusStudent;
 import com.scotiabank.studentsapi.service.StudentService;
 
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
-
+@Slf4j
 @RestController
-@RequestMapping("/v1/students")
+@RequestMapping("/students")
 public class StudentsController {
  
     private final StudentService studentService;
@@ -28,30 +35,22 @@ public class StudentsController {
         this.studentService = studentService;
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(version ="1.0.0", path = "/health", produces = MediaType.TEXT_PLAIN_VALUE)
+    public Mono<ResponseEntity<String>> getHealthCheck() {
+        return Mono.just(ResponseEntity.ok(String.format("It's alive!: %s", LocalDateTime.now())));
+    }
+    
+    @GetMapping(version ="1.0.0", produces = MediaType.APPLICATION_JSON_VALUE)
     public Flux<StudentResponse> getStudentsByStatus(@RequestParam(defaultValue = "ACTIVE") StatusStudent status) {
+        log.info("Obteniendo estudiantes con estado: {}", status);
         return studentService.getStudentsByStatus(status);
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(version ="1.0.0", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.CREATED)   
     public Mono<StudentResponse> createNewStudent(@Valid @RequestBody StudentRequest request) {
+        log.info("Creando nuevo estudiante con id : {}", request.getId());
         return studentService.createStudent(request);
     }
-    
-
-    /*@GetMapping(produces = MediaType.TEXT_PLAIN_VALUE, version = "1")
-    public Mono<String> getStudents(
-            @RequestParam(defaultValue = "10") Integer limit,
-            @RequestParam(defaultValue = "") String cursor) {
-        
-        if (limit == null || limit <= 0) {
-            limit = 10;
-        }
-        if (cursor == null) {
-            cursor = "";
-        }
-        
-        return Mono.just("List of students with limit: " + limit + ", cursor: " + cursor);
-    }*/
     
 }
