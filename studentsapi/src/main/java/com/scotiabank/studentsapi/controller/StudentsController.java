@@ -48,9 +48,9 @@ public class StudentsController {
 
     @PostMapping(version ="1.0.0", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)   
-    public Mono<StudentResponse> createNewStudent(@Valid @RequestBody StudentRequest request) {
+    public Mono<Void> createNewStudent(@Valid @RequestBody StudentRequest request) {
         log.info("Creando nuevo estudiante con id : {}", request.getId());
-        return studentService.createStudent(request);
+        return studentService.createStudent(request).thenEmpty(Mono.empty());
     }
     
 }

@@ -29,10 +29,13 @@ public class StudentService {
 
         return studentRepository.existsById(student.getId())
                 .doOnNext(exists -> log.info("¿Existe estudiante con ID {}? {}", student.getId(), exists))
-                .filter(exists -> !exists)
-                .switchIfEmpty(Mono.defer(() -> Mono.error(new DuplicateKeyException(
-                        String.format("Ya existe un estudiante con el id %d", student.getId())))))
-                .then(studentRepository.save(student))
+                .flatMap(exists -> {
+                    if (exists) {
+                        return Mono.error(new DuplicateKeyException(
+                                String.format("Ya existe un estudiante con el id %d", student.getId())));
+                    }
+                    return studentRepository.save(student);
+                })
                 .doOnSuccess(
                         savedStudent -> log.info("Estudiante guardado exitosamente con ID: {}", savedStudent.getId()))
                 .map(StudentMapper::convertToDTO);

@@ -13,13 +13,12 @@ logging:
       springframework:
         web:
           reactive:
-            function: DEBUG
+            function: INFO
         r2dbc: DEBUG
     reactor:
       netty:
         http:
-          client: DEBUG
-          server: DEBUG
+          server: INFO
 
 # Server configuration
 server:
