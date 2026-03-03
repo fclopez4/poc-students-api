@@ -21,10 +21,10 @@ public class StudentRequest {
     private Long id;
 
     @NotBlank(message = "El nombre es obligatorio")
-    private String name;
+    private String firstName;
 
     @NotBlank(message = "El apellido es obligatorio")
-    private String surname;
+    private String lastName;
 
     @NotNull(message = "El estado es obligatorio")
     @Pattern(regexp = "^(ACTIVE|INACTIVE)$", message = "El estado debe ser ACTIVE o INACTIVE")

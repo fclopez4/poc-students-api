@@ -9,11 +9,13 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
+import org.springframework.web.accept.InvalidApiVersionException;
 import org.springframework.web.accept.MissingApiVersionException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.support.WebExchangeBindException;
+import org.springframework.web.server.ResponseStatusException;
 
 import lombok.extern.slf4j.Slf4j;
 import reactor.core.publisher.Mono;
@@ -52,13 +54,13 @@ public class GlobalExcepcionHandler {
         return Mono.just(new ResponseEntity<>(errorResponse, HttpStatus.PRECONDITION_FAILED));
     }
 
-    @ExceptionHandler(MissingApiVersionException.class)
-    public Mono<ResponseEntity<Map<String, Object>>> handleMissingApiVersionException(MissingApiVersionException ex) {
-        log.error("Ocurrió una excepción de versión API faltante:", ex);
+    @ExceptionHandler({ MissingApiVersionException.class, InvalidApiVersionException.class })
+    public Mono<ResponseEntity<Map<String, Object>>> handleMissingApiVersionException(ResponseStatusException ex) {
+        log.error("Ocurrió una excepción en la informacion de versión del API:", ex);
 
         Map<String, Object> errorResponse = new HashMap<>();
         errorResponse.put("status", HttpStatus.BAD_REQUEST.value());
-        errorResponse.put("message", ex.getMessage());
+        errorResponse.put("message", ex.getReason());
 
         return Mono.just(new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST));
     }
