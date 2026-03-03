@@ -1,0 +1,26 @@
+meta {
+  name: create a new student with invalid values
+  type: http
+  seq: 7
+}
+
+post {
+  url: http://localhost:8080/api/students
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "id":0,
+    "firstName":"",
+    "lastName":"",
+    "status":"",
+    "age":1
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

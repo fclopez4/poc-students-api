@@ -1,0 +1,33 @@
+meta {
+  name: create a second valid new student
+  type: http
+  seq: 3
+}
+
+post {
+  url: http://localhost:8080/api/students
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "id":2,
+    "firstName":"Julio",
+    "lastName":"Jaramillo",
+    "status":"ACTIVE",
+    "age":42
+  }
+}
+
+script:pre-request {
+  
+  //console.log("Request Body: ", req.getBody());
+  bru.setVar("student_id", req.getBody().id);
+  //console.log("get var value: ", bru.getVar("student_id"))
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

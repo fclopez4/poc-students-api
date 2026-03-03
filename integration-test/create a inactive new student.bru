@@ -1,0 +1,26 @@
+meta {
+  name: create a inactive new student
+  type: http
+  seq: 4
+}
+
+post {
+  url: http://localhost:8080/api/students
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "id":3,
+    "firstName":"Tanjiro",
+    "lastName":"Kamado",
+    "status":"INACTIVE",
+    "age":16
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

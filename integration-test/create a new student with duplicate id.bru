@@ -1,0 +1,26 @@
+meta {
+  name: create a new student with duplicate id
+  type: http
+  seq: 5
+}
+
+post {
+  url: http://localhost:8080/api/students
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "id":{{student_id}},
+    "firstName":"Fabio",
+    "lastName":"Lopez",
+    "status":"ACTIVE",
+    "age":33
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
