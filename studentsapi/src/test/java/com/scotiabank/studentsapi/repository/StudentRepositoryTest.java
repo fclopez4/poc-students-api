@@ -9,6 +9,8 @@ import com.scotiabank.studentsapi.model.entity.Student;
 import com.scotiabank.studentsapi.model.enums.StatusStudent;
 import com.scotiabank.studentsapi.respository.StudentRepository;
 
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 import reactor.test.StepVerifier;
 
 @DataR2dbcTest
@@ -48,7 +50,11 @@ class StudentRepositoryTest {
 
     @Test
     void findByStatus_ReturnActiveStudents() {
-        StepVerifier.create(studentRepository.findByStatus(StatusStudent.ACTIVE))
+        // Act
+        Flux<Student> activeStudents = studentRepository.findByStatus(StatusStudent.ACTIVE);
+
+        // Assert
+        StepVerifier.create(activeStudents)
                 .expectNextMatches(s -> s.getId().equals(1L)
                         && s.getFirstName().equals("Juan")
                         && s.getStatus() == StatusStudent.ACTIVE)
@@ -57,7 +63,11 @@ class StudentRepositoryTest {
 
     @Test
     void findByStatus_ReturnInactiveStudents() {
-        StepVerifier.create(studentRepository.findByStatus(StatusStudent.INACTIVE))
+        // Act
+        Flux<Student> inactiveStudents = studentRepository.findByStatus(StatusStudent.INACTIVE);
+
+        // Assert
+        StepVerifier.create(inactiveStudents)
                 .expectNextMatches(s -> s.getId().equals(2L)
                         && s.getFirstName().equals("María")
                         && s.getStatus() == StatusStudent.INACTIVE)
@@ -66,15 +76,21 @@ class StudentRepositoryTest {
 
     @Test
     void findByStatus_ReturnEmpty_WhenNoStudentsMatchStatus() {
+        // Arrange
         studentRepository.deleteAll().block();
 
-        StepVerifier.create(studentRepository.findByStatus(StatusStudent.ACTIVE))
+        // Act
+        Flux<Student> activeStudents = studentRepository.findByStatus(StatusStudent.ACTIVE);
+
+        // Assert
+        StepVerifier.create(activeStudents)
                 .expectNextCount(0)
                 .verifyComplete();
     }
 
     @Test
     void save_PersistStudentCorrectly() {
+        // Arrange
         Student newStudent = Student.builder()
                 .id(3L)
                 .firstName("Carlos")
@@ -84,21 +100,33 @@ class StudentRepositoryTest {
                 .isNew(true)
                 .build();
 
-        StepVerifier.create(studentRepository.save(newStudent))
+        // Act
+        Mono<Student> savedStudent = studentRepository.save(newStudent);
+
+        // Assert
+        StepVerifier.create(savedStudent)
                 .expectNext(newStudent)
                 .verifyComplete();
     }
 
     @Test
     void existsById_ReturnTrue_WhenStudentExists() {
-        StepVerifier.create(studentRepository.existsById(1L))
+        // Act
+        Mono<Boolean> exists = studentRepository.existsById(1L);
+
+        // Assert
+        StepVerifier.create(exists)
                 .expectNext(true)
                 .verifyComplete();
     }
 
     @Test
     void existsById_ReturnFalse_WhenStudentDoesNotExist() {
-        StepVerifier.create(studentRepository.existsById(99L))
+        // Act
+        Mono<Boolean> exists = studentRepository.existsById(999L);
+
+        // Assert
+        StepVerifier.create(exists)
                 .expectNext(false)
                 .verifyComplete();
     }

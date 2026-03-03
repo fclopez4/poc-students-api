@@ -12,7 +12,6 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.accept.InvalidApiVersionException;
 import org.springframework.web.accept.MissingApiVersionException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.support.WebExchangeBindException;
 import org.springframework.web.server.ResponseStatusException;
@@ -25,9 +24,8 @@ import reactor.core.publisher.Mono;
 public class GlobalExcepcionHandler {
 
     @ExceptionHandler(WebExchangeBindException.class)
-    @ResponseStatus(HttpStatus.PRECONDITION_FAILED)
     public Mono<ResponseEntity<Map<String, Object>>> handleWebExchangeBindException(WebExchangeBindException ex) {
-        log.error("Ocurrió una excepción en la validación de los argumentos:", ex);
+        log.error("Validation exception occurred:", ex);
 
         List<String> errors = ex.getBindingResult()
                 .getFieldErrors()
@@ -45,7 +43,7 @@ public class GlobalExcepcionHandler {
 
     @ExceptionHandler(DuplicateKeyException.class)
     public Mono<ResponseEntity<Map<String, Object>>> handleDuplicateKeyException(DuplicateKeyException ex) {
-        log.error("Ocurrió una excepción de clave duplicada:", ex);
+        log.error("Duplicate key exception occurred:", ex);
 
         Map<String, Object> errorResponse = new HashMap<>();
         errorResponse.put("status", HttpStatus.PRECONDITION_FAILED.value());
@@ -56,7 +54,7 @@ public class GlobalExcepcionHandler {
 
     @ExceptionHandler({ MissingApiVersionException.class, InvalidApiVersionException.class })
     public Mono<ResponseEntity<Map<String, Object>>> handleMissingApiVersionException(ResponseStatusException ex) {
-        log.error("Ocurrió una excepción en la informacion de versión del API:", ex);
+        log.error("API version exception occurred:", ex);
 
         Map<String, Object> errorResponse = new HashMap<>();
         errorResponse.put("status", HttpStatus.BAD_REQUEST.value());
@@ -67,7 +65,7 @@ public class GlobalExcepcionHandler {
 
     @ExceptionHandler(Exception.class)
     public Mono<ResponseEntity<Map<String, Object>>> handleGeneralException(Exception ex) {
-        log.error("Ocurrió una excepción no controlada:", ex);
+        log.error("Unhandled exception occurred:", ex);
         
         Map<String, Object> errorResponse = new HashMap<>();
         errorResponse.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());

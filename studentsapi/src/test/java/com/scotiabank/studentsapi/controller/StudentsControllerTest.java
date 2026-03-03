@@ -176,4 +176,19 @@ class StudentsControllerTest {
                 .verifyComplete();
     }
 
+    @Test
+    void getStudentsByStatus_ReturnsInternalServerError_WhenUnexpectedExceptionOccurs() {
+        String expectedMessage = "Unexpected error";
+        when(studentService.getStudentsByStatus(StatusStudent.ACTIVE))
+                .thenReturn(Flux.error(new RuntimeException(expectedMessage)));
+
+        webTestClient.get()
+                .uri("/api/students?status=ACTIVE")
+                .exchange()
+                .expectStatus().isEqualTo(500)
+                .expectBody()
+                .jsonPath("$.status").isEqualTo(500)
+                .jsonPath("$.message").isEqualTo(expectedMessage);
+    }
+
 }

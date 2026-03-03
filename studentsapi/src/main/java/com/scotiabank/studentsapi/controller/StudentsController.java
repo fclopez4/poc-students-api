@@ -42,14 +42,14 @@ public class StudentsController {
     
     @GetMapping(version ="1.0.0", produces = MediaType.APPLICATION_JSON_VALUE)
     public Flux<StudentResponse> getStudentsByStatus(@RequestParam(defaultValue = "ACTIVE") StatusStudent status) {
-        log.info("Obteniendo estudiantes con estado: {}", status);
+        log.info("Fetching students with status: {}", status);
         return studentService.getStudentsByStatus(status);
     }
 
     @PostMapping(version ="1.0.0", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)   
     public Mono<Void> createNewStudent(@Valid @RequestBody StudentRequest request) {
-        log.info("Creando nuevo estudiante con id : {}", request.getId());
+        log.info("Creating new student with id: {}", request.getId());
         return studentService.createStudent(request).thenEmpty(Mono.empty());
     }
     
