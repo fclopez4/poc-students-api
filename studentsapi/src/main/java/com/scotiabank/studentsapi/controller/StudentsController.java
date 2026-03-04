@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,8 +35,8 @@ public class StudentsController {
     }
 
     @GetMapping(version ="1.0.0", path = "/health", produces = MediaType.TEXT_PLAIN_VALUE)
-    public Mono<ResponseEntity<String>> getHealthCheck() {
-        return Mono.just(ResponseEntity.ok(String.format("It's alive!: %s", LocalDateTime.now())));
+    public Mono<String> getHealthCheck() {
+        return Mono.just(String.format("It's alive!: %s", LocalDateTime.now()));
     }
     
     @GetMapping(version ="1.0.0", produces = MediaType.APPLICATION_JSON_VALUE)

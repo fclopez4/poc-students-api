@@ -1,6 +1,7 @@
 package com.scotiabank.studentsapi.config;
 
 import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
@@ -41,9 +42,15 @@ public class LoggingWebFilter implements WebFilter {
         String queryParams = request.getURI().getQuery();
         String fullPath = queryParams != null ? httpPath + "?" + queryParams : httpPath;
         
-        log.debug("Incoming request: {} {} [correlationId={}, requestId={}]", 
+        // Populate MDC for the initial log entry (before the reactive pipeline starts)
+        MDC.put(CORRELATION_ID_KEY, correlationId);
+        MDC.put(REQUEST_ID_KEY, requestId);
+        MDC.put("httpMethod", httpMethod);
+        MDC.put("httpPath", httpPath);
+        log.debug("Incoming request: {} {} [correlationId={}, requestId={}]",
                 httpMethod, fullPath, correlationId, requestId);
-        
+        MDC.clear();
+
         // Continue the filter chain with context
         return chain.filter(exchange)
                 .contextWrite(ctx -> ctx
@@ -73,28 +80,38 @@ public class LoggingWebFilter implements WebFilter {
         return correlationId;
     }
     
-    private void logResponse(ServerWebExchange exchange, String httpMethod, String httpPath, 
+    private void logResponse(ServerWebExchange exchange, String httpMethod, String httpPath,
                             String correlationId, String requestId, Instant startTime) {
-        int statusCode = exchange.getResponse().getStatusCode() != null 
-                ? exchange.getResponse().getStatusCode().value() 
+        int statusCode = exchange.getResponse().getStatusCode() != null
+                ? exchange.getResponse().getStatusCode().value()
                 : 0;
-        
+
         long duration = Duration.between(startTime, Instant.now()).toMillis();
-        
+
+        // Extra MDC fields consumed by logback-spring.xml
+        MDC.put("httpStatus", String.valueOf(statusCode));
+        MDC.put("duration", String.valueOf(duration));
         log.info("Request completed: {} {} - Status: {} - Duration: {}ms [correlationId={}, requestId={}]",
                 httpMethod, httpPath, statusCode, duration, correlationId, requestId);
+        MDC.remove("httpStatus");
+        MDC.remove("duration");
     }
     
-    private void logError(ServerWebExchange exchange, String httpMethod, String httpPath, 
+    private void logError(ServerWebExchange exchange, String httpMethod, String httpPath,
                          String correlationId, String requestId, Instant startTime, Throwable error) {
-        int statusCode = exchange.getResponse().getStatusCode() != null 
-                ? exchange.getResponse().getStatusCode().value() 
+        int statusCode = exchange.getResponse().getStatusCode() != null
+                ? exchange.getResponse().getStatusCode().value()
                 : 500;
-        
+
         long duration = Duration.between(startTime, Instant.now()).toMillis();
-        
+
+        // Extra MDC fields consumed by logback-spring.xml
+        MDC.put("httpStatus", String.valueOf(statusCode));
+        MDC.put("duration", String.valueOf(duration));
         log.error("Request failed: {} {} - Status: {} - Duration: {}ms [correlationId={}, requestId={}] - Error: {}",
-                httpMethod, httpPath, statusCode, duration, correlationId, requestId, 
+                httpMethod, httpPath, statusCode, duration, correlationId, requestId,
                 error.getMessage(), error);
+        MDC.remove("httpStatus");
+        MDC.remove("duration");
     }
 }
