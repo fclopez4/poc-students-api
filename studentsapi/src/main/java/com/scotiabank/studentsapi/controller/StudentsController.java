@@ -40,7 +40,7 @@ public class StudentsController {
     }
     
     @GetMapping(version ="1.0.0", produces = MediaType.APPLICATION_JSON_VALUE)
-    public Flux<StudentResponse> getStudentsByStatus(@RequestParam(defaultValue = "ACTIVE") StatusStudent status) {
+    public Flux<StudentResponse> getStudentsByStatus(@RequestParam(name = "status", defaultValue = "ACTIVE") StatusStudent status) {
         log.info("Fetching students with status: {}", status);
         return studentService.getStudentsByStatus(status);
     }

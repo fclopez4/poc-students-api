@@ -18,14 +18,10 @@ logging:
   level:
     org:
       springframework:
-        web:
-          reactive:
-            function: INFO
+        web: TRACE
         r2dbc: DEBUG
     reactor:
-      netty:
-        http:
-          server: INFO
+      netty: INFO
 
 app:
   database:

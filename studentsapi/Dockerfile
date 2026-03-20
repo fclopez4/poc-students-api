@@ -13,6 +13,9 @@ COPY src ./src
 
 RUN ./gradlew bootJar --no-daemon
 
+# Descargar OpenTelemetry Java Agent
+RUN wget -O opentelemetry-javaagent.jar https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/latest/download/opentelemetry-javaagent.jar
+
 # Etapa 2: Runtime
 FROM eclipse-temurin:17-jre-alpine
 
@@ -23,6 +26,8 @@ USER spring:spring
 
 # Copiar el JAR desde la etapa de build
 COPY --from=builder /app/build/libs/*.jar app.jar
+# Copiar el agente de OpenTelemetry
+COPY --from=builder /app/opentelemetry-javaagent.jar opentelemetry-javaagent.jar
 
 # Exponer el puerto por defecto de Spring Boot
 EXPOSE 8080
