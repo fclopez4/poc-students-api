@@ -6,9 +6,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Timeout;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webflux.test.autoconfigure.WebFluxTest;
 import org.springframework.context.annotation.Import;
@@ -29,6 +31,7 @@ import reactor.test.StepVerifier;
 
 @WebFluxTest(controllers = StudentsController.class)
 @Import(WebConfiguration.class)
+@Timeout(value = 30, unit = TimeUnit.SECONDS)
 class StudentsControllerTest {
 
     @MockitoBean
