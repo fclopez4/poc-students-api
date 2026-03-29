@@ -37,11 +37,6 @@ public class Student implements Persistable<Long> {
     private boolean isNew = false;
 
     @Override
-    public Long getId() {
-        return id;
-    }
-
-    @Override
     public boolean isNew() {
         return isNew;
     }

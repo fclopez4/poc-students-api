@@ -23,11 +23,11 @@ public final class StudentMapper {
 
     public static Student convertToEntity(StudentRequest dto) {
         return Student.builder()
-                .id(dto.getId())
-                .firstName(dto.getFirstName())
-                .lastName(dto.getLastName())
-                .status(StatusStudent.valueOf(dto.getStatus()))
-                .age(dto.getAge())
+                .id(dto.id())
+                .firstName(dto.firstName())
+                .lastName(dto.lastName())
+                .status(StatusStudent.valueOf(dto.status()))
+                .age(dto.age())
                 .isNew(true)
                 .build();
     }

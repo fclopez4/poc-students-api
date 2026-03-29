@@ -109,7 +109,7 @@ class StudentsControllerTest {
 
     @Test
     void createNewStudent_ReturnsPreconditionFailed_WhenStudentAlreadyExists() {
-        String expectedMessage = String.format("Ya existe un estudiante con el id %d", studentRequest.getId());
+        String expectedMessage = String.format("Ya existe un estudiante con el id %d", studentRequest.id());
         
         when(studentService.createStudent(any(StudentRequest.class)))
                 .thenReturn(Mono.error(new DuplicateKeyException(expectedMessage)));

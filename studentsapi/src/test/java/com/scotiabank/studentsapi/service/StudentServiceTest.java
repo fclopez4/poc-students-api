@@ -112,11 +112,11 @@ class StudentServiceTest {
         StepVerifier.create(result)
                 .assertNext(response -> {
                     assertNotNull(response);
-                    assertEquals(activeStudentexpectedResponse1.getId(), response.getId());
-                    assertEquals(activeStudentexpectedResponse1.getFirstName(), response.getFirstName());
-                    assertEquals(activeStudentexpectedResponse1.getLastName(), response.getLastName());
-                    assertEquals(activeStudentexpectedResponse1.getStatus(), response.getStatus());
-                    assertEquals(activeStudentexpectedResponse1.getAge(), response.getAge());
+                    assertEquals(activeStudentexpectedResponse1.id(), response.id());
+                    assertEquals(activeStudentexpectedResponse1.firstName(), response.firstName());
+                    assertEquals(activeStudentexpectedResponse1.lastName(), response.lastName());
+                    assertEquals(activeStudentexpectedResponse1.status(), response.status());
+                    assertEquals(activeStudentexpectedResponse1.age(), response.age());
                 })
                 .verifyComplete();
 
@@ -152,11 +152,11 @@ class StudentServiceTest {
         StepVerifier.create(result)
                 .assertNext(response -> {
                     assertNotNull(response);
-                    assertEquals(inactiveStudent1.getId(), response.getId());
-                    assertEquals(inactiveStudent1.getFirstName(), response.getFirstName());
-                    assertEquals(inactiveStudent1.getLastName(), response.getLastName());
-                    assertEquals(inactiveStudent1.getStatus().toString(), response.getStatus());
-                    assertEquals(inactiveStudent1.getAge(), response.getAge());
+                    assertEquals(inactiveStudent1.getId(), response.id());
+                    assertEquals(inactiveStudent1.getFirstName(), response.firstName());
+                    assertEquals(inactiveStudent1.getLastName(), response.lastName());
+                    assertEquals(inactiveStudent1.getStatus().toString(), response.status());
+                    assertEquals(inactiveStudent1.getAge(), response.age());
                 })
                 .verifyComplete();
 
@@ -176,14 +176,14 @@ class StudentServiceTest {
         // Assert
         StepVerifier.create(result)
                 .assertNext(response -> {
-                    assertEquals(activeStudent1.getId(), response.getId());
-                    assertEquals(activeStudent1.getFirstName(), response.getFirstName());
-                    assertEquals(activeStudent1.getStatus().toString(), response.getStatus());
+                    assertEquals(activeStudent1.getId(), response.id());
+                    assertEquals(activeStudent1.getFirstName(), response.firstName());
+                    assertEquals(activeStudent1.getStatus().toString(), response.status());
                 })
                 .assertNext(response -> {
-                    assertEquals(activeStudent2.getId(), response.getId());
-                    assertEquals(activeStudent2.getFirstName(), response.getFirstName());
-                    assertEquals(activeStudent2.getStatus().toString(), response.getStatus());
+                    assertEquals(activeStudent2.getId(), response.id());
+                    assertEquals(activeStudent2.getFirstName(), response.firstName());
+                    assertEquals(activeStudent2.getStatus().toString(), response.status());
                 })
                 .verifyComplete();
 
@@ -202,14 +202,14 @@ class StudentServiceTest {
         // Assert
         StepVerifier.create(result)
                 .assertNext(response -> {
-                    assertEquals(inactiveStudent1.getId(), response.getId());
-                    assertEquals(inactiveStudent1.getFirstName(), response.getFirstName());
-                    assertEquals(inactiveStudent1.getStatus().toString(), response.getStatus());
+                    assertEquals(inactiveStudent1.getId(), response.id());
+                    assertEquals(inactiveStudent1.getFirstName(), response.firstName());
+                    assertEquals(inactiveStudent1.getStatus().toString(), response.status());
                 })
                 .assertNext(response -> {
-                    assertEquals(inactiveStudent2.getId(), response.getId());
-                    assertEquals(inactiveStudent2.getFirstName(), response.getFirstName());
-                    assertEquals(inactiveStudent2.getStatus().toString(), response.getStatus());
+                    assertEquals(inactiveStudent2.getId(), response.id());
+                    assertEquals(inactiveStudent2.getFirstName(), response.firstName());
+                    assertEquals(inactiveStudent2.getStatus().toString(), response.status());
                 })
                 .verifyComplete();
 

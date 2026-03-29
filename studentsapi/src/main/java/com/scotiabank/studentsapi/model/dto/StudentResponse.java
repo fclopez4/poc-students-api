@@ -1,20 +1,12 @@
 package com.scotiabank.studentsapi.model.dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@Getter
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
-@EqualsAndHashCode
-public class StudentResponse {
-    private Long id;
-    private String firstName;
-    private String lastName;
-    private String status;
-    private Short age;
+public record StudentResponse(
+    Long id,
+    String firstName,
+    String lastName,
+    String status,
+    Short age) {
 }
