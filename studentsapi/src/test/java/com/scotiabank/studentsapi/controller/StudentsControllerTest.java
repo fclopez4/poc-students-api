@@ -38,7 +38,7 @@ class StudentsControllerTest {
     private StudentService studentService;
 
     @Autowired
-    WebTestClient webTestClient;
+    private WebTestClient webTestClient;
 
     private StudentRequest studentRequest;
     private StudentResponse studentResponse;
